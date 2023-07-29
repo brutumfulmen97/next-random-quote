@@ -1,22 +1,23 @@
-import getAllQuotes from "./getAllQuotes";
 
-const prevQuoteObj = {
-    prev: 1,
-    setPrev: function (num: number) {
-        this.prev = num;
-    },
-};
+import getAllQuotes from './getAllQuotes'
 
-export default async function getRandomQuote(): Promise<Quote> {
-    const results = await getAllQuotes();
+export default async function getRandomQuote(id: string): Promise<Quote> {
 
-    let randomIndex = prevQuoteObj.prev;
+    const prevQuoteId = parseInt(id)
 
-    while (randomIndex === prevQuoteObj.prev) {
-        randomIndex = Math.floor(Math.random() * results.length);
+    const results: Quote[] = await getAllQuotes()
+
+    const ids: number[] = results.map(q => q.id)
+
+    let randomId = prevQuoteId
+
+    while (randomId === prevQuoteId) {
+        const randomIndex = Math.floor(Math.random() * ids.length)
+        randomId = ids[randomIndex]
     }
 
-    prevQuoteObj.setPrev(randomIndex);
+    const newQuote = results.find(q => q.id === randomId) as Quote
 
-    return results[randomIndex];
+    return newQuote
+
 }
